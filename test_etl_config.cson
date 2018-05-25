@@ -1,0 +1,71 @@
+DATA_SOURCES: [
+  {
+    domain: 'ToucanTouco'
+    file: 'month_ToucanTouco_2018-01-01_2018-04-30.csv'
+    separator: ';'
+    encoding: 'utf-8'
+    type: 'csv'
+  }
+   {
+    domain: 'linechart'
+    file: 'test_studio_line.csv'
+    separator: ';'
+    encoding: 'utf-8'
+    type: 'csv'
+  }
+  {
+    domain: 'test_classement'
+    file: 'test_classement.csv'
+    separator: ';'
+    encoding: 'utf-8'
+    type: 'csv'
+  }
+  {
+    domain: 'text_dash'
+    file: 'text_dash.xlsx'
+    sheetname: "text_dash"
+    type: 'excel'
+  }
+  {
+    domain: 'referentiel'
+    file: 'report_dashboard.csv'
+    separator: ';'
+    encoding: 'utf-8'
+    type: 'csv'
+  }
+]
+DATA_PROVIDERS: []
+REPORTS: [
+  {
+    query:
+      domain: 'referentiel'
+    template: 'report'
+  }
+]
+DASHBOARDS: [
+  {
+    query:
+      domain: 'referentiel'
+      default: 1
+    report: 'Report'
+    template: 'dashboard1'
+  }
+  {
+    query:
+      domain: 'referentiel'
+      default:
+        $ne: 1
+    report: 'Report'
+    template: 'dashboard2'
+  }
+]
+MAX_SELECTABLE_DASHBOARDS: 500
+MONGO_INDEXES: [
+  'domain'
+]
+PIPELINE:[
+  input_domains: 'linechart'
+  function_name: 'compute_linechart'
+  output_domains: 'linechart'
+
+]
