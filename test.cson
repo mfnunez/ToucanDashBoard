@@ -70,6 +70,17 @@ slides: [
     hidden: false
     parent_id: 10
     title: 'New customers Evolution'
+
+    chartOptions:
+      chartType: "barchart"
+      value: ["Metric_Value"]
+      label: ["Period"]
+      data:
+        query:
+          domain:"DigitalTransformation"
+          Country_Name: $in: ["Luxembourg"]
+          Bank_Name: $in: ["BNP"]
+          Indicator: $in: ["New clients"]
   }
   {
     id: 10003
