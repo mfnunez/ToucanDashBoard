@@ -38,7 +38,7 @@ slides: [
   }
   {
     level: 2
-    title: 'Acquisition OverView'
+    title: 'Acquisition FunnelView'
     id: 202
     parent_id: 20
     hidden: false
@@ -158,49 +158,21 @@ slides: [
     level: 3
     hidden: false
     parent_id: 202
-    title: 'Funnel New Account'
+    title: 'Product Form'
   }
   {
     id: 20202
     level: 3
     hidden: false
     parent_id: 202
-    title: 'Funnel Pret Immobilier'
-  }
-  {
-    id: 20203
-    level: 3
-    hidden: false
-    parent_id: 202
-    title: 'Funnel Pret Personnel'
+    title: 'Simulator'
   }
   {
     id: 20301
     level: 3
     hidden: false
     parent_id: 203
-    title: 'Product Traffic'
-  }
-  {
-    id: 20302
-    level: 3
-    hidden: false
-    parent_id: 203
-    title: 'Iniated Product Forms'
-  }
-  {
-    id: 20303
-    level: 3
-    hidden: false
-    parent_id: 203
-    title: 'Finished Product Forms'
-  }
-  {
-    id: 20304
-    level: 3
-    hidden: false
-    parent_id: 203
-    title: 'Product Simulation Forms'
+    title: 'Product View'
   }
   {
     id: 20401
@@ -230,4 +202,5 @@ slides: [
     parent_id: 204
     title: 'App Dowload trend evolution'
   }
+  
 ]
