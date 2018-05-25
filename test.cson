@@ -70,17 +70,21 @@ slides: [
     hidden: false
     parent_id: 10
     title: 'New customers Evolution'
+    commentary: "What is the contribution of digital in sales and business? Can we identify axes of amelioration?"
 
     chartOptions:
+      units:
+        Metric_Value: " New customers"
       chartType: "barchart"
-      value: ["Metric_Value"]
-      label: ["Period"]
+      value: "Metric_Value"
+      label: "Period"
       data:
         query:
           domain:"DigitalTransformation"
           Country_Name: $in: ["Luxembourg"]
           Bank_Name: $in: ["BNP"]
           Indicator: $in: ["New clients"]
+      legend: true
   }
   {
     id: 10003
@@ -180,5 +184,4 @@ slides: [
     parent_id: 204
     title: 'App Dowload trend evolution'
   }
-  { id: 99999}
 ]
