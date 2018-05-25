@@ -1,0 +1,173 @@
+settings: true
+sharingOptions: true
+slidePdfEnabled: true
+dashboardPdfEnabled: true
+captureChartEnabled: true
+embedCharts: true
+comments: true
+
+glossary:
+  title: 'Glossaire'
+  terms: [
+    term: "Dataviz"
+    meaning: "c’est l’art de raconter des chiffres de manière créative et ludique, là où les tableaux Excel échouent. C’est en quelque sorte mettre en musique l’information chiffrée"
+  ]
+slides: [
+  {
+    level: 0
+    id: 0
+  }
+  {
+    level: 1
+    title: 'Digital Transformation'
+    id: 10
+    hidden: true
+  }
+  {
+    level: 1
+    title: 'Digital Performance'
+    id: 20
+    hidden: false
+  }
+  {
+    level: 2
+    title: 'Contact Touchpoint'
+    id: 201
+    parent_id: 20
+    hidden: false
+  }
+  {
+    level: 2
+    title: 'Acquisition OverView'
+    id: 202
+    parent_id: 20
+    hidden: false
+  }
+  {
+    level: 2
+    title: 'Acquisition Detail'
+    id: 203
+    parent_id: 20
+    hidden: false
+  }
+  {
+    level: 2
+    title: 'Recency'
+    id: 204
+    parent_id: 20
+    hidden: false
+  }
+  {
+    id: 10001
+    level: 3
+    hidden: false
+    parent_id: 10
+    title: 'Sales Evolution'
+  }
+  {
+    id: 10002
+    level: 3
+    hidden: false
+    parent_id: 10
+    title: 'New customers Evolution'
+  }
+  {
+    id: 10003
+    level: 3
+    hidden: false
+    parent_id: 10
+    title: 'Frequency of mobile App usage'
+  }
+  {
+    id: 10004
+    level: 3
+    hidden: false
+    parent_id: 10
+    title: 'Percentage of active clients'
+  }
+  {
+    id: 10005
+    level: 3
+    hidden: false
+    parent_id: 10
+    title: 'Percentage of online forms'
+  }
+  {
+    id: 20201
+    level: 3
+    hidden: false
+    parent_id: 202
+    title: 'Funnel New Account'
+  }
+  {
+    id: 20202
+    level: 3
+    hidden: false
+    parent_id: 202
+    title: 'Funnel Pret Immobilier'
+  }
+  {
+    id: 20203
+    level: 3
+    hidden: false
+    parent_id: 202
+    title: 'Funnel Pret Personnel'
+  }
+  {
+    id: 20301
+    level: 3
+    hidden: false
+    parent_id: 203
+    title: 'Product Traffic'
+  }
+  {
+    id: 20302
+    level: 3
+    hidden: false
+    parent_id: 203
+    title: 'Iniated Product Forms'
+  }
+  {
+    id: 20303
+    level: 3
+    hidden: false
+    parent_id: 203
+    title: 'Finished Product Forms'
+  }
+  {
+    id: 20304
+    level: 3
+    hidden: false
+    parent_id: 203
+    title: 'Product Simulation Forms'
+  }
+  {
+    id: 20401
+    level: 3
+    hidden: false
+    parent_id: 204
+    title: 'Visits return frequency'
+  }
+  {
+    id: 20402
+    level: 3
+    hidden: false
+    parent_id: 204
+    title: 'Global Top 5 Actions'
+  }
+  {
+    id: 20403
+    level: 3
+    hidden: false
+    parent_id: 204
+    title: 'Global Top 5 Business & Not-Business Oriented Actions'
+  }
+  {
+    id: 20404
+    level: 3
+    hidden: false
+    parent_id: 204
+    title: 'App Dowload trend evolution'
+  }
+  { id: 99999}
+]
