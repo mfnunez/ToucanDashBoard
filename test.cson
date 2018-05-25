@@ -93,6 +93,52 @@ slides: [
     title: 'Percentage of online forms'
   }
   {
+    id: 20101
+    level: 3
+    hidden: false
+    parent_id: 201
+    title: 'Qualified visits'
+
+    datasets:
+      bars_data:
+        query:
+          domain: 'ToucanTouco'
+          Subcategory: $in: ['Contact Touchpoints']
+          Metric_Acronym: $in: ['NB_Visits']
+          Bank_Name: $nin: ['All']
+        units:
+          value: 'nb of visits'
+      lines_data:
+        query:
+          domain: 'ToucanTouco'
+          Subcategory: $in: ['Contact Touchpoints']
+          Metric_Acronym: $in: ['BounceRate']
+          Bank_Name: $nin: ['All']
+        precision:
+          value: '.2f'
+        units:
+          value: 'bounce rate'
+
+  chartOptions:
+    chartType: 'new-barlinechart'
+
+    bars:
+      dataset: 'bars_data'
+      domain: [0, 2000000]
+    label: 'Period'
+    value: 'Metric_Value'
+    groups: 'Bank_Name'
+
+    lines:
+      dataset: 'lines_data'
+      x: 'Period'
+      y: 'Metric_Value'
+      domain: [0, 100]
+      serie: 'Bank_Name'
+
+    legend: true
+  }
+  {
     id: 20201
     level: 3
     hidden: false
@@ -169,5 +215,5 @@ slides: [
     parent_id: 204
     title: 'App Dowload trend evolution'
   }
-  
+  { id: 99999}
 ]
