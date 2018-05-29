@@ -63,6 +63,7 @@ slides: [
     hidden: false
     parent_id: 10
     title: 'Sales Evolution'
+
     commentary: "What is the contribution of digital in sales and business? Can we identify axes of amelioration?"
 
     datasets:
@@ -241,12 +242,7 @@ slides: [
               new_column: 'period'
               column_1: 'Year'
               column_2: 'Month'
- 
-
-  
-        
-      
-        ]
+    ]
       meta: [
         'evolution_bis'
       ]
@@ -321,11 +317,7 @@ slides: [
               new_column: 'period'
               column_1: 'Year'
               column_2: 'Month'
- 
 
-  
-        
-      
         ]
       metaSerie: [
         'evolution'
@@ -338,6 +330,7 @@ slides: [
     hidden: false
     parent_id: 10
     title: 'Percentage of online forms'
+
     commentary: "What is the contribution of digital in sales and business? Can we identify axes of amelioration?"
 
     datasets:
@@ -460,6 +453,7 @@ slides: [
         #'evolution'
       #]
       legend: true
+
   }
   {
     id: 20101
@@ -468,25 +462,42 @@ slides: [
     parent_id: 201
     title: 'Qualified visits'
 
+    commentary: "Are we reaching the most qualified audience to increase our potential client base?"
+
+
     datasets:
       bars_data:
         query:
           domain: 'ToucanTouco'
           Subcategory: $in: ['Contact Touchpoints']
           Metric_Acronym: $in: ['NB_Visits']
+
           Bank_Name: $nin: ['All']
         units:
           value: 'nb of visits'
+
+          Bank_Name: $in: ['All']
+        units:
+          value: ' nb of visits'
+
       lines_data:
         query:
           domain: 'ToucanTouco'
           Subcategory: $in: ['Contact Touchpoints']
           Metric_Acronym: $in: ['BounceRate']
+
           Bank_Name: $nin: ['All']
         precision:
           value: '.2f'
         units:
           value: 'bounce rate'
+
+          Bank_Name: $in: ['All']
+        precision:
+          value: '.2f'
+        units:
+          value: ' bounce rate'
+
 
   chartOptions:
     chartType: 'new-barlinechart'
@@ -496,13 +507,20 @@ slides: [
       domain: [0, 2000000]
     label: 'Period'
     value: 'Metric_Value'
-    groups: 'Bank_Name'
+
+
+    groups:'Bank_Name'
+
 
     lines:
       dataset: 'lines_data'
       x: 'Period'
       y: 'Metric_Value'
+
       domain: [0, 100]
+
+      domain: [0, 10]
+
       serie: 'Bank_Name'
 
     legend: true
@@ -556,5 +574,6 @@ slides: [
     parent_id: 204
     title: 'App Dowload trend evolution'
   }
+
   
 ]
