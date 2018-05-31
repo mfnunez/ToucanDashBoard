@@ -1,0 +1,645 @@
+settings: true
+sharingOptions: true
+slidePdfEnabled: true
+dashboardPdfEnabled: true
+captureChartEnabled: true
+embedCharts: true
+comments: true
+
+glossary:
+  title: 'Glossaire'
+  terms: [
+    term: "Dataviz"
+    meaning: "c’est l’art de raconter des chiffres de manière créative et ludique, là où les tableaux Excel échouent. C’est en quelque sorte mettre en musique l’information chiffrée"
+  ]
+slides: [
+  {
+    level: 0
+    id: 0
+  }
+  {
+    level: 1
+    title: 'Digital Transformation'
+    id: 10
+    hidden: true
+  }
+  {
+    level: 1
+    title: 'Digital Performance'
+    id: 20
+    hidden: false
+  }
+  {
+    level: 2
+    title: 'Contact Touchpoint'
+    id: 201
+    parent_id: 20
+    hidden: false
+  }
+  {
+    level: 2
+    title: 'Acquisition FunnelView'
+    id: 202
+    parent_id: 20
+    hidden: false
+  }
+  {
+    level: 2
+    title: 'Acquisition Detail'
+    id: 203
+    parent_id: 20
+    hidden: false
+  }
+  {
+    level: 2
+    title: 'Recency'
+    id: 204
+    parent_id: 20
+    hidden: false
+  }
+  {
+    id: 10001
+    level: 3
+    hidden: false
+    parent_id: 10
+    title: 'Sales Evolution'
+    commentary: "What is the contribution of digital in sales and business? Can we identify axes of amelioration?"
+
+    datasets:
+      bars_data:
+        query:[
+          $match:
+            domain:"DigitalTransformation"
+            Country_Name: $in: ["Luxembourg"]
+            Bank_Name: $in: ["BNP"]
+            Indicator: $in: ['Total sales']
+        ,
+          $project:
+            Metric_Value: "$Metric_Value"
+            Period: "$Period"
+            Year: $substr: ["$Period",0, 4]
+            Month: $substr: ["$Period",4, 6]
+            Indicator: '$Indicator'
+            Metric_Name: "$Metric_Name"
+            Evol_Y1: "$Evol_Y1"
+            Evol_YTD1: "$Evol_YTD1"
+        ]
+        postprocess:[
+          add:
+            new_column: 'periode'
+            column_1: 'Year'
+            column_2: 'Month'
+        ,
+          convert_str_to_datetime:
+             selector: 'periode'
+             format: '%Y%m'
+        ,
+          top:
+              #group: ['variable',"Category"]
+              value: 'periode'
+              limit: 13
+              order: 'desc'
+        ,
+          convert_datetime_to_str:
+              selector: 'periode'
+              format: '%Y-%m'
+        ]
+        precision: 
+          Evol_Y1: '.1%'
+          Evol_YTD1: '.1%'
+
+      lines_data:
+        query:[
+          $match:
+            domain:"DigitalTransformation"
+            Country_Name: $in: ["Luxembourg"]
+            Bank_Name: $in: ["BNP"]
+            Indicator: $in: ['Total sales contributed by digital channels']
+            Metric_Name: $in: ['% of sales contributed by digital channels']
+        ,
+          $project:
+            Metric_Value: "$Metric_Value"
+            Period: "$Period"
+            Year: $substr: ["$Period",0, 4]
+            Month: $substr: ["$Period",4, 6]
+            Indicator: '$Indicator'
+            Metric_Name: "$Metric_Name"
+            Evol_Y1: "$Evol_Y1"
+            Evol_Y1: $multiply: ["$Evol_Y1", 100]
+        ]
+        postprocess:[
+          add:
+            new_column: 'periode'
+            column_1: 'Year'
+            column_2: 'Month'
+        ,
+          convert_str_to_datetime:
+             selector: 'periode'
+             format: '%Y%m'
+        ,
+          top:
+              #group: ['variable',"Category"]
+              value: 'periode'
+              limit: 13
+              order: 'desc'
+        ,
+          convert_datetime_to_str:
+              selector: 'periode'
+              format: '%Y-%m'
+        ]
+        precision: 
+          Metric_Value: '.1%'
+          Evol_Y1: '.1f'
+
+    chartOptions:
+      style: 'increase-legend-width' 
+      chartType: 'new-barlinechart'
+      bars:
+        dataset: 'bars_data'
+        #domain: [0, 20000]
+      label: 'periode'
+      value: 'Metric_Value'
+      groups: 'Metric_Name'
+
+      
+      lines:
+        dataset: 'lines_data'
+        x: 'periode'
+        y: 'Metric_Value'
+        domain: [-1, 1]
+        serie: 'Metric_Name'
+        metaSerie: [
+          'Evol_Y1'
+        ]
+
+
+      legend: true
+      metaSerie: [
+        'Evol_Y1'
+      ,
+        'Evol_YTD1'
+      ]
+
+  }
+  {
+    id: 10002
+    level: 3
+    hidden: false
+    parent_id: 10
+    title: 'New customers Evolution'
+    commentary: "What is the contribution of digital in sales and business? Can we identify axes of amelioration?"
+
+    chartOptions:
+      style: 'increase-legend-width' 
+      units:
+        Metric_Value: " New customers"     # nom de ma légende
+      chartType: "barchart"
+      value: "Metric_Value"
+      label: "periode"
+      data:
+        query:[
+          $match:
+            domain:"DigitalTransformation"
+            Country_Name: $in: ["Luxembourg"]
+            Bank_Name: $in: ["BNP"]
+            Indicator: $in: ['New clients']
+        ,
+          $project:
+            Metric_Value: "$Metric_Value"
+            Period: "$Period"
+            Year: $substr: ["$Period",0, 4]
+            Month: $substr: ["$Period",4, 6]
+            Indicator: '$Indicator'
+            Metric_Name: "$Metric_Name"
+            Evol_Y1: "$Evol_Y1"
+            Evol_YTD1: "$Evol_YTD1"
+
+        ]
+        postprocess:[
+          add:
+            new_column: 'periode'
+            column_1: 'Year'
+            column_2: 'Month'
+        ,
+          convert_str_to_datetime:
+             selector: 'periode'
+             format: '%Y%m'
+        ,
+          top:
+              #group: ['variable',"Category"]
+              value: 'periode'
+              limit: 13
+              order: 'desc'
+        ,
+          convert_datetime_to_str:
+              selector: 'periode'
+              format: '%Y-%m'
+        ]
+        precision:
+            Evol_Y1:'.1%'
+            Evol_YTD1:'.1%'
+      metaSerie: [
+        'Evol_Y1'
+      ,
+        'Evol_YTD1'
+      ]
+      legend: true
+  }
+  {
+    id: 10003
+    level: 3
+    hidden: false
+    parent_id: 10
+    title: 'Frequency of mobile App usage'
+    commentary: "What is the contribution of digital in sales and business? Can we identify axes of amelioration?"
+
+    datasets:
+      bars_data:
+        query:[
+          $match:
+            domain:"DigitalTransformation"
+            Country_Name: $in: ["Luxembourg"]
+            Bank_Name: $in: ["BNP"]
+            Indicator: $in: ['Frequency of mobile app usage']
+            Metric_Name: $in: ['# of connections to mobile app']
+        ,
+          $project:
+            Metric_Value: "$Metric_Value"
+            Period: "$Period"
+            Year: $substr: ["$Period",0, 4]
+            Month: $substr: ["$Period",4, 6]
+            Indicator: '$Indicator'
+            Metric_Name: '$Metric_Name'
+            Evol_Y1: "$Evol_Y1"
+            Evol_YTD1: "$Evol_YTD1"
+        ]
+        postprocess:[
+          add:
+            new_column: 'periode'
+            column_1: 'Year'
+            column_2: 'Month'
+        ,
+          convert_str_to_datetime:
+             selector: 'periode'
+             format: '%Y%m'
+        ,
+          top:
+              #group: ['variable',"Category"]
+              value: 'periode'
+              limit: 13
+              order: 'desc'
+        ,
+          convert_datetime_to_str:
+              selector: 'periode'
+              format: '%Y-%m'
+        ]
+        precision:
+          Evol_Y1:'.1%'
+          Evol_YTD1:'.1%'
+        units: 
+          Metric_Value: ' Connections'
+      lines_data:
+        query:[
+          $match:
+            domain:"DigitalTransformation"
+            Country_Name: $in: ["Luxembourg"]
+            Bank_Name: $in: ["BNP"]
+            Indicator: $in: ['Frequency of mobile app usage']
+            Metric_Name: $in: ['Avg. # of connections to mobile app by user']
+        ,
+          $project:
+            Metric_Value: "$Metric_Value"
+            Indicator: '$Indicator'
+            Period: "$Period"
+            Year: $substr: ["$Period",0, 4]
+            Month: $substr: ["$Period",4, 6]
+            Metric_Name: "$Metric_Name"
+            Evol_Y1: "$Evol_Y1"
+
+        ]
+        postprocess:[
+          add:
+            new_column: 'periode'
+            column_1: 'Year'
+            column_2: 'Month'
+        ,
+          convert_str_to_datetime:
+             selector: 'periode'
+             format: '%Y%m'
+        ,
+          top:
+              #group: ['variable',"Category"]
+              value: 'periode'
+              limit: 13
+              order: 'desc'
+        ,
+          convert_datetime_to_str:
+              selector: 'periode'
+              format: '%Y-%m'
+        ]
+        precision:
+          Evol_Y1:'.1%'
+        units: 
+          Metric_Value: ' number of average connections per user'
+
+    chartOptions:
+      style: 'increase-legend-width' 
+      chartType: 'new-barlinechart'
+      bars:
+        dataset: 'bars_data'
+        domain: [0, 700000]
+      label: 'periode'
+      value: 'Metric_Value'
+      groups: 'Metric_Name'
+
+      
+      lines:
+        dataset: 'lines_data'
+        x: 'periode'
+        y: 'Metric_Value'
+        domain: [0, 30]
+        serie: 'Metric_Name'
+        metaSerie: ['Evol_Y1']
+
+
+      metaSerie: [
+        'Evol_Y1'
+        'Evol_YTD1'
+      ]
+      legend: true
+  }
+  {
+    id: 10004
+    level: 3
+    hidden: false
+    parent_id: 10
+    title: 'Percentage of active clients'
+    commentary: "What is the contribution of digital in sales and business? Can we identify axes of amelioration?"
+
+    chartOptions:
+      #units:
+        #Metric_Value: "%"     # nom de ma légende
+      chartType: "linechart"
+      value: "Metric_Value"
+      groups: "Metric_Name"
+      date: "periode"
+      data:
+        query:[
+          $match:
+            domain:"DigitalTransformation"
+            Country_Name: $in: ["Luxembourg"]
+            Bank_Name: $in: ["BNP"]
+            Metric_Name: $in: ['% of active mobile app clients','% of active website clients']
+        ,
+          $project:
+            Metric_Value: "$Metric_Value"
+            Metric_Name: '$Metric_Name'
+            Period: "$Period"
+            Year: $substr: ["$Period",0, 4]
+            Month: $substr: ["$Period",4, 6]
+            Evol_Y1: "$Evol_Y1"
+            Evol_Y1: $multiply: ['$Evol_Y1',100]
+        ]
+        postprocess:[
+          add:
+            new_column: 'periode'
+            column_1: 'Year'
+            column_2: 'Month'
+        ,
+          convert_str_to_datetime:
+             selector: 'periode'
+             format: '%Y%m'
+        ,
+          top:
+              #group: ['variable',"Category"]
+              value: 'periode'
+              limit: 26
+              order: 'desc'
+        ,
+          convert_datetime_to_str:
+              selector: 'periode'
+              format: '%Y-%m'
+        ]
+        precision: 
+          Evol_Y1: '.1f'
+          Metric_Value: '.1%'
+      metaSerie: [
+        'Evol_Y1'
+      ]
+      legend: true
+  }
+  {
+    id: 10005
+    level: 3
+    hidden: false
+    parent_id: 10
+    title: 'Percentage of online forms'
+    commentary: "What is the contribution of digital in sales and business? Can we identify axes of amelioration?"
+
+    datasets:
+      bars_data:
+        query:[
+          $match:
+            domain:"DigitalTransformation"
+            Country_Name: $in: ["Luxembourg"]
+            Bank_Name: $in: ["BNP"]
+            Indicator_Group: $in: ['Product initiated form','Product finished form']
+            Indicator: $in: ['All products']
+            Platform_Category: $in: ["Site"]
+        ,
+          $project:
+            Metric_Value: "$Metric_Value"
+            Period: "$Period"
+            Year: $substr: ["$Period",0, 4]
+            Month: $substr: ["$Period",4, 6]
+            Indicator_Group: ['$Indicator_Group']
+            Evol_Y1: "$Evol_Y1"
+            Evol_YTD1: "$Evol_YTD1"
+        ]
+        postprocess:[
+          add:
+            new_column: 'periode'
+            column_1: 'Year'
+            column_2: 'Month'
+        ,
+          convert_str_to_datetime:
+             selector: 'periode'
+             format: '%Y%m'
+        ,
+          top:
+              #group: ['variable',"Category"]
+              value: 'periode'
+              limit: 13
+              order: 'desc'
+        ,
+          convert_datetime_to_str:
+              selector: 'periode'
+              format: '%Y-%m'
+        ]
+        precision:
+          Evol_Y1: '.1%'
+          Evol_YTD1: '.1%'
+      lines_data:
+        query:[
+          $match:
+            domain:"DigitalTransformation"
+            Country_Name: $in: ["Luxembourg"]
+            Bank_Name: $in: ["BNP"]
+            Indicator_Group: $in: ['Product form completion rate']
+            Indicator: $in: ['All products']
+            Platform_Category: $in: ["Site"]
+        ,
+          $project:
+            Metric_Value: "$Metric_Value"
+            Indicator_Group: '$Indicator_Group'
+            Period: "$Period"
+            Year: $substr: ["$Period",0, 4]
+            Month: $substr: ["$Period",4, 6]
+            Evol_Y1: "$Evol_Y1"
+            Evol_Y1: $multiply: ['$Evol_Y1',100]
+        ]
+        postprocess:[
+          add:
+            new_column: 'periode'
+            column_1: 'Year'
+            column_2: 'Month'
+        ,
+          convert_str_to_datetime:
+             selector: 'periode'
+             format: '%Y%m'
+        ,
+          top:
+              #group: ['variable',"Category"]
+              value: 'periode'
+              limit: 13
+              order: 'desc'
+        ,
+          convert_datetime_to_str:
+              selector: 'periode'
+              format: '%Y-%m'
+        ]
+        precision:
+          Metric_Value: '.1%'
+          Evol_Y1: '.1f'
+
+    chartOptions:
+      chartType: 'new-barlinechart'
+      bars:
+        dataset: 'bars_data'
+        domain: [0, 3000]
+      label: 'periode'
+      value: 'Metric_Value'
+      groups: 'Indicator_Group'
+
+      
+      lines:
+        dataset: 'lines_data'
+        x: 'periode'
+        y: 'Metric_Value'
+        domain: [-1, 1]
+        serie: 'Indicator_Group'
+        metaSerie: ['Evol_Y1']
+
+      metaSerie: [
+        'Evol_Y1'
+        'Evol_YTD1'
+      ]
+      legend: true
+  }
+  {
+    id: 20101
+    level: 3
+    hidden: false
+    parent_id: 201
+    title: 'Qualified visits'
+
+    datasets:
+      bars_data:
+        query:
+          domain: 'ToucanTouco'
+          Subcategory: $in: ['Contact Touchpoints']
+          Metric_Acronym: $in: ['NB_Visits']
+          Bank_Name: $nin: ['All']
+        units:
+          value: 'nb of visits'
+      lines_data:
+        query:
+          domain: 'ToucanTouco'
+          Subcategory: $in: ['Contact Touchpoints']
+          Metric_Acronym: $in: ['BounceRate']
+          Bank_Name: $nin: ['All']
+        precision:
+          value: '.2f'
+        units:
+          value: 'bounce rate'
+
+  chartOptions:
+    chartType: 'new-barlinechart'
+
+    bars:
+      dataset: 'bars_data'
+      domain: [0, 2000000]
+    label: 'Period'
+    value: 'Metric_Value'
+    groups: 'Bank_Name'
+
+    lines:
+      dataset: 'lines_data'
+      x: 'Period'
+      y: 'Metric_Value'
+      domain: [0, 100]
+      serie: 'Bank_Name'
+
+    legend: true
+  }
+  {
+    id: 20201
+    level: 3
+    hidden: false
+    parent_id: 202
+    title: 'Product Form'
+  }
+  {
+    id: 20202
+    level: 3
+    hidden: false
+    parent_id: 202
+    title: 'Simulator'
+  }
+  {
+    id: 20301
+    level: 3
+    hidden: false
+    parent_id: 203
+    title: 'Product View'
+  }
+  {
+    id: 20401
+    level: 3
+    hidden: false
+    parent_id: 204
+    title: 'Visits return frequency'
+  }
+  {
+    id: 20402
+    level: 3
+    hidden: false
+    parent_id: 204
+    title: 'Global Top 5 Actions'
+  }
+  {
+    id: 20403
+    level: 3
+    hidden: false
+    parent_id: 204
+    title: 'Global Top 5 Business & Not-Business Oriented Actions'
+  }
+  {
+    id: 20404
+    level: 3
+    hidden: false
+    parent_id: 204
+    title: 'App Dowload trend evolution'
+  }
+  
+]
