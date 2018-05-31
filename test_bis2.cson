@@ -104,10 +104,10 @@ slides: [
               selector: 'periode'
               format: '%Y-%m'
         ]
-        precision: 
+        precision:
           Evol_Y1: '.1%'
           Evol_YTD1: '.1%'
-        units: 
+        units:
           Metric_Value: ' Sales'
 
       lines_data:
@@ -149,7 +149,7 @@ slides: [
               selector: 'periode'
               format: '%Y-%m'
         ]
-        precision: 
+        precision:
           Metric_Value: '.1%'
           Evol_Y1: '.1f'
         units:
@@ -157,7 +157,7 @@ slides: [
           Metric_Value: ' By Digital Channels'
 
     chartOptions:
-      style: 'increase-legend-width' 
+      style: 'increase-legend-width'
       chartType: 'new-barlinechart'
       bars:
         dataset: 'bars_data'
@@ -166,7 +166,7 @@ slides: [
       value: 'Metric_Value'
       groups: 'Metric_Name'
 
-      
+
       lines:
         dataset: 'lines_data'
         x: 'periode'
@@ -195,7 +195,7 @@ slides: [
     commentary: "What is the contribution of digital in sales and business? Can we identify axes of amelioration?"
 
     chartOptions:
-      style: 'increase-legend-width' 
+      style: 'increase-legend-width'
       units:
         Metric_Value: " New customers"     # nom de ma légende
       chartType: "barchart"
@@ -301,7 +301,7 @@ slides: [
         precision:
           Evol_Y1:'.1%'
           Evol_YTD1:'.1%'
-        units: 
+        units:
           Metric_Value: ' Connections'
       lines_data:
         query:[
@@ -344,11 +344,11 @@ slides: [
         ]
         precision:
           Evol_Y1:'.1%'
-        units: 
+        units:
           Metric_Value: ' Average connections per user'
 
     chartOptions:
-      style: 'increase-legend-width' 
+      style: 'increase-legend-width'
       chartType: 'new-barlinechart'
       bars:
         dataset: 'bars_data'
@@ -357,7 +357,7 @@ slides: [
       value: 'Metric_Value'
       groups: 'Metric_Name'
 
-      
+
       lines:
         dataset: 'lines_data'
         x: 'periode'
@@ -425,7 +425,7 @@ slides: [
               selector: 'periode'
               format: '%Y-%m'
         ]
-        precision: 
+        precision:
           Evol_Y1: '.1f'
           Metric_Value: '.1%'
         units:
@@ -544,7 +544,7 @@ slides: [
       value: 'Metric_Value'
       groups: 'Indicator_Group'
 
-      
+
       lines:
         dataset: 'lines_data'
         x: 'periode'
@@ -606,11 +606,93 @@ slides: [
     legend: true
   }
   {
-    id: 20201
+    id: 20101
     level: 3
     hidden: false
-    parent_id: 202
-    title: 'Product Form'
+    parent_id: 201
+    title: 'Qualified visits'
+    commentary: "Are we reaching the most qualified audience to increase our potential client base?"
+
+    datasets:
+      bars_data:
+        query:[
+          $match:
+            domain: 'ToucanTouco'
+            Subcategory: $in: ['Contact Touchpoints']
+            Metric_Acronym: $in: ['NB_Visits']
+            Bank_Name: $in: ['BNP','HelloBank!']
+            Country_Name: $in: ['France']
+        # ,
+        #   $group:
+        #     _id:
+        #       Platform_Category : "$Platform_Category"
+        #     Metric_Value: $sum: "$Metric_Value"
+        ,
+          $project:
+              Metric_Value: 1
+              Bank_Name : 1
+              Platform_Category : 1
+              Metric_Acronym : 1
+              Period : 1
+        ]
+
+      lines_data:
+        query:[
+          $match:
+            domain: 'ToucanTouco'
+            Subcategory: $in: ['Contact Touchpoints']
+            Metric_Acronym: $in: ['BounceRate']
+            Bank_Name: $in: ['BNP','HelloBank!']
+            Country_Name: $in: ['France']
+        # ,
+        #   $group:
+        #     _id:
+        #       Platform_Category : "$Platform_Category"
+        #     Metric_Value: $sum: "$Metric_Value"
+        ,
+          $project:
+              Metric_Value: $multiply: ["$Metric_Value", 100]
+              Bank_Name : 1
+              Platform_Category : 1
+              Metric_Acronym : 1
+              Period : 1
+        ]
+        precision:
+          value: '.2f'
+        units:
+          Metric_Value: [
+            unit: " Visits"
+            where:
+              "Metric_Acronym": "NB_Visits"
+          ,
+            unit: " %"
+            where:
+              "Metric_Acronym": "BounceRate"
+          ]
+    chartOptions:
+      chartType: 'new-barlinechart'
+
+      bars:
+        dataset: 'bars_data'
+        #domain: [0, 2000000]
+      label: 'Period'
+      value: 'Metric_Value'
+      groups:'Bank_Name'
+
+      lines:
+        dataset: 'lines_data'
+        x: 'Period'
+        y: 'Metric_Value'
+        domain: [0, 100]
+        serie: 'Bank_Name'
+
+      legend: true
+
+      filters:
+        "upper-right":
+          on: "Platform_Category"
+          type: "buttons"
+          datasets: ['bars_data','lines_data']
   }
   {
     id: 20202
@@ -749,7 +831,5 @@ slides: [
     parent_id: 204
     title: 'App Dowload trend evolution'
   }
-  
+
 ]
-
-
