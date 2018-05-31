@@ -107,6 +107,8 @@ slides: [
         precision: 
           Evol_Y1: '.1%'
           Evol_YTD1: '.1%'
+        units: 
+          Metric_Value: ' Sales'
 
       lines_data:
         query:[
@@ -150,6 +152,9 @@ slides: [
         precision: 
           Metric_Value: '.1%'
           Evol_Y1: '.1f'
+        units:
+          Evol_Y1: ' Pts'
+          Metric_Value: ' By Digital Channels'
 
     chartOptions:
       style: 'increase-legend-width' 
@@ -340,7 +345,7 @@ slides: [
         precision:
           Evol_Y1:'.1%'
         units: 
-          Metric_Value: ' number of average connections per user'
+          Metric_Value: ' Average connections per user'
 
     chartOptions:
       style: 'increase-legend-width' 
@@ -423,6 +428,8 @@ slides: [
         precision: 
           Evol_Y1: '.1f'
           Metric_Value: '.1%'
+        units:
+          Evol_Y1: ' Pts'
       metaSerie: [
         'Evol_Y1'
       ]
@@ -443,7 +450,7 @@ slides: [
             domain:"DigitalTransformation"
             Country_Name: $in: ["Luxembourg"]
             Bank_Name: $in: ["BNP"]
-            Indicator_Group: $in: ['Product initiated form','Product finished form']
+            Indicator_Group: $in: ['Product finished form','Product initiated form']
             Indicator: $in: ['All products']
             Platform_Category: $in: ["Site"]
         ,
@@ -479,6 +486,8 @@ slides: [
         precision:
           Evol_Y1: '.1%'
           Evol_YTD1: '.1%'
+        units:
+          Metric_Value: ' Visitors'
       lines_data:
         query:[
           $match:
@@ -521,8 +530,12 @@ slides: [
         precision:
           Metric_Value: '.1%'
           Evol_Y1: '.1f'
+        units:
+          Evol_Y1: ' Pts'
+          Metric_Value: ' Convertion Rate'
 
     chartOptions:
+      style: 'increase-legend-width'
       chartType: 'new-barlinechart'
       bars:
         dataset: 'bars_data'
