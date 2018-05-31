@@ -81,36 +81,48 @@ slides: [
             Month: $substr: ["$Period",4, 6]
             Indicator: '$Indicator'
             Metric_Name: "$Metric_Name"
-            Evol_Y1: "$Evol_Y1"
-            Evol_YTD1: "$Evol_YTD1"
         ]
         postprocess:[
+          pivot:
+              index: ['Month','Indicator','Metric_Name']
+              column: ['Year']
+              value: 'Metric_Value'
+        ,
+          subtract:
+              new_column: 'difference'
+              column_1: '2018'
+              column_2: '2017'
+        ,
+          divide:
+              new_column: 'Evolution vs N-1'
+              column_1: 'difference'
+              column_2: '2018'
+        ,
+          multiply:
+              new_column: 'Evolution vs N-1'
+              column_1: 'Evolution vs N-1'
+              column_2: 100
+        ,
+          melt:
+              id: ['Month','difference','Evolution vs N-1','Indicator','Metric_Name']
+              value: ['2018','2017']
+              dropna: true
+        ,
           add:
-            new_column: 'periode'
-            column_1: 'Year'
-            column_2: 'Month'
+              new_column: 'period'
+              column_1: 'Year'
+              column_2: 'Month'
         ,
           convert_str_to_datetime:
-             selector: 'periode'
+             selector: 'period'
              format: '%Y%m'
         ,
-          top:
-              #group: ['variable',"Category"]
-              value: 'periode'
-              limit: 13
-              order: 'desc'
-        ,
           convert_datetime_to_str:
-              selector: 'periode'
-              format: '%Y-%m'
+             selector: 'period'
+             format: '%Y-%m'
         ]
-        precision:
-          Evol_Y1: '.1%'
-          Evol_YTD1: '.1%'
         units:
-          Metric_Value: ' Sales'
-
-
+          value: ' Nb of Sales'
       lines_data:
         query:[
           $match:
@@ -122,71 +134,77 @@ slides: [
         ,
           $project:
             Metric_Value: "$Metric_Value"
+            Indicator: '$Indicator'
             Period: "$Period"
             Year: $substr: ["$Period",0, 4]
             Month: $substr: ["$Period",4, 6]
-            Indicator: '$Indicator'
+            Metric_Value: $multiply: ["$Metric_Value", 100]
             Metric_Name: "$Metric_Name"
-            Evol_Y1: "$Evol_Y1"
-            Evol_Y1: $multiply: ["$Evol_Y1", 100]
         ]
         postprocess:[
+          pivot:
+              index: ['Month','Indicator','Metric_Name']
+              column: ['Year']
+              value: 'Metric_Value'
+        ,
+          subtract:
+              new_column: 'difference'
+              column_1: '2018'
+              column_2: '2017'
+        ,
+          divide:
+              new_column: 'Evolution vs N-1'
+              column_1: 'difference'
+              column_2: '2018'
+        ,
+          multiply:
+              new_column: 'Evolution vs N-1'
+              column_1: 'Evolution vs N-1'
+              column_2: 100
+        ,
+          melt:
+              id: ['Month','difference','Evolution vs N-1','Indicator','Metric_Name']
+              value: ['2018','2017']
+              dropna: true
+        ,
           add:
-            new_column: 'periode'
-            column_1: 'Year'
-            column_2: 'Month'
+              new_column: 'period'
+              column_1: 'Year'
+              column_2: 'Month'
         ,
           convert_str_to_datetime:
-             selector: 'periode'
+             selector: 'period'
              format: '%Y%m'
         ,
-          top:
-              #group: ['variable',"Category"]
-              value: 'periode'
-              limit: 13
-              order: 'desc'
-        ,
           convert_datetime_to_str:
-              selector: 'periode'
-              format: '%Y-%m'
+             selector: 'period'
+             format: '%Y-%m'
         ]
-        precision:
-          Metric_Value: '.1%'
-          Evol_Y1: '.1f'
         units:
-          Evol_Y1: ' Pts'
-          Metric_Value: ' By Digital Channels'
+          value: ' %'
 
     chartOptions:
-      style: 'increase-legend-width'
       chartType: 'new-barlinechart'
       bars:
         dataset: 'bars_data'
-        #domain: [0, 20000]
-      label: 'periode'
-      value: 'Metric_Value'
+        domain: [0, 200000]
+      label: 'period'
+      value: 'value'
       groups: 'Metric_Name'
 
 
       lines:
         dataset: 'lines_data'
-        x: 'periode'
-        y: 'Metric_Value'
-        domain: [-1, 1]
+        x: 'period'
+        y: 'value'
+        domain: [0, 10]
         serie: 'Metric_Name'
-        metaSerie: [
-          'Evol_Y1'
-        ]
 
 
       legend: true
       metaSerie: [
-        'Evol_Y1'
-      ,
-        'Evol_YTD1'
+        'Evolution vs N-1'
       ]
-
-
   }
   {
     id: 10002
@@ -197,58 +215,68 @@ slides: [
     commentary: "What is the contribution of digital in sales and business? Can we identify axes of amelioration?"
 
     chartOptions:
-      style: 'increase-legend-width'
       units:
-        Metric_Value: " New customers"     # nom de ma légende
+        value: " New customers"     # nom de ma légende
       chartType: "barchart"
-      value: "Metric_Value"
-      label: "periode"
+      value: "value"
+      label: "period"
       data:
         query:[
           $match:
             domain:"DigitalTransformation"
             Country_Name: $in: ["Luxembourg"]
             Bank_Name: $in: ["BNP"]
-            Indicator: $in: ['New clients']
+            Indicator: $in: ["New clients"]
         ,
           $project:
             Metric_Value: "$Metric_Value"
             Period: "$Period"
             Year: $substr: ["$Period",0, 4]
             Month: $substr: ["$Period",4, 6]
-            Indicator: '$Indicator'
-            Metric_Name: "$Metric_Name"
-            Evol_Y1: "$Evol_Y1"
-            Evol_YTD1: "$Evol_YTD1"
-
-        ]
-        postprocess:[
-          add:
-            new_column: 'periode'
-            column_1: 'Year'
-            column_2: 'Month'
-        ,
-          convert_str_to_datetime:
-             selector: 'periode'
-             format: '%Y%m'
-        ,
-          top:
-              #group: ['variable',"Category"]
-              value: 'periode'
-              limit: 13
-              order: 'desc'
-        ,
-          convert_datetime_to_str:
-              selector: 'periode'
-              format: '%Y-%m'
         ]
         precision:
-            Evol_Y1:'.1%'
-            Evol_YTD1:'.1%'
+          'Evolution': '.1f'
+        postprocess:[
+          pivot:
+              index: ['Month']
+              column: ['Year']
+              value: 'Metric_Value'
+        ,
+          subtract:
+              new_column: 'difference'
+              column_1: '2018'
+              column_2: '2017'
+        ,
+          divide:
+              new_column: 'Evolution'
+              column_1: 'difference'
+              column_2: '2018'
+        ,
+          multiply:
+              new_column: 'Evolution'
+              column_1: 'Evolution'
+              column_2: 100
+        ,
+          melt:
+              id: ['Month','difference','Evolution']
+              value: ['2018','2017']
+              dropna: true
+        ,
+          add:
+              new_column: 'period'
+              column_1: 'Year'
+              column_2: 'Month'
+        ,
+          convert_str_to_datetime:
+             selector: 'period'
+             format: '%Y%m'
+        ,
+          convert_datetime_to_str:
+             selector: 'period'
+             format: '%Y-%m'
+        ]
       metaSerie: [
-        'Evol_Y1'
-      ,
-        'Evol_YTD1'
+        'Evolution'
       ]
       legend: true
   }
@@ -277,34 +305,49 @@ slides: [
             Month: $substr: ["$Period",4, 6]
             Indicator: '$Indicator'
             Metric_Name: '$Metric_Name'
-            Evol_Y1: "$Evol_Y1"
-            Evol_YTD1: "$Evol_YTD1"
         ]
         postprocess:[
+          pivot:
+              index: ['Month','Indicator','Metric_Name']
+              column: ['Year']
+              value: 'Metric_Value'
+        ,
+          subtract:
+              new_column: 'difference'
+              column_1: '2018'
+              column_2: '2017'
+        ,
+          divide:
+              new_column: 'Evolution vs N-1'
+              column_1: 'difference'
+              column_2: '2018'
+        ,
+          multiply:
+              new_column: 'Evolution vs N-1'
+              column_1: 'Evolution vs N-1'
+              column_2: 100
+        ,
+          melt:
+              id: ['Month','difference','Evolution vs N-1','Indicator','Metric_Name']
+              value: ['2018','2017']
+              dropna: true
+        ,
           add:
-            new_column: 'periode'
-            column_1: 'Year'
-            column_2: 'Month'
+              new_column: 'period'
+              column_1: 'Year'
+              column_2: 'Month'
         ,
           convert_str_to_datetime:
-             selector: 'periode'
+             selector: 'period'
              format: '%Y%m'
         ,
-          top:
-              #group: ['variable',"Category"]
-              value: 'periode'
-              limit: 13
-              order: 'desc'
-        ,
           convert_datetime_to_str:
-              selector: 'periode'
-              format: '%Y-%m'
+             selector: 'period'
+             format: '%Y-%m'
+
         ]
-        precision:
-          Evol_Y1:'.1%'
-          Evol_YTD1:'.1%'
         units:
-          Metric_Value: ' Connections'
+          value: ' Nb of connections'
       lines_data:
         query:[
           $match:
@@ -321,57 +364,71 @@ slides: [
             Year: $substr: ["$Period",0, 4]
             Month: $substr: ["$Period",4, 6]
             Metric_Name: "$Metric_Name"
-            Evol_Y1: "$Evol_Y1"
 
         ]
         postprocess:[
+          pivot:
+              index: ['Month','Indicator','Metric_Name']
+              column: ['Year']
+              value: 'Metric_Value'
+        ,
+          subtract:
+              new_column: 'difference'
+              column_1: '2018'
+              column_2: '2017'
+        ,
+          divide:
+              new_column: 'Evolution vs N-1'
+              column_1: 'difference'
+              column_2: '2018'
+        ,
+          multiply:
+              new_column: 'Evolution vs N-1'
+              column_1: 'Evolution vs N-1'
+              column_2: 100
+        ,
+          melt:
+              id: ['Month','difference','Evolution vs N-1','Indicator','Metric_Name']
+              value: ['2018','2017']
+              dropna: true
+        ,
           add:
-            new_column: 'periode'
-            column_1: 'Year'
-            column_2: 'Month'
+              new_column: 'period'
+              column_1: 'Year'
+              column_2: 'Month'
         ,
           convert_str_to_datetime:
-             selector: 'periode'
+             selector: 'period'
              format: '%Y%m'
         ,
-          top:
-              #group: ['variable',"Category"]
-              value: 'periode'
-              limit: 13
-              order: 'desc'
-        ,
           convert_datetime_to_str:
-              selector: 'periode'
-              format: '%Y-%m'
+             selector: 'period'
+             format: '%Y-%m'
+
         ]
-        precision:
-          Evol_Y1:'.1%'
         units:
-          Metric_Value: ' Average connections per user'
+          value: ' number of average connections per user'
 
     chartOptions:
-      style: 'increase-legend-width'
       chartType: 'new-barlinechart'
       bars:
         dataset: 'bars_data'
         domain: [0, 700000]
-      label: 'periode'
-      value: 'Metric_Value'
+      label: 'period'
+      value: 'value'
       groups: 'Metric_Name'
 
 
       lines:
         dataset: 'lines_data'
-        x: 'periode'
-        y: 'Metric_Value'
+        x: 'period'
+        y: 'value'
         domain: [0, 30]
         serie: 'Metric_Name'
-        metaSerie: ['Evol_Y1']
 
 
       metaSerie: [
-        'Evol_Y1'
-        'Evol_YTD1'
+        'Evolution vs N-1'
       ]
       legend: true
   }
@@ -384,12 +441,13 @@ slides: [
     commentary: "What is the contribution of digital in sales and business? Can we identify axes of amelioration?"
 
     chartOptions:
-      #units:
-        #Metric_Value: "%"     # nom de ma légende
+      units:
+        value: "%"     # nom de ma légende
+        evolution: "% d'évolution"
       chartType: "linechart"
-      value: "Metric_Value"
+      value: "value"
       groups: "Metric_Name"
-      date: "periode"
+      date: "period"
       data:
         query:[
           $match:
@@ -400,40 +458,53 @@ slides: [
         ,
           $project:
             Metric_Value: "$Metric_Value"
+            Metric_Value: $multiply: ["$Metric_Value", 100]
             Metric_Name: '$Metric_Name'
             Period: "$Period"
             Year: $substr: ["$Period",0, 4]
             Month: $substr: ["$Period",4, 6]
-            Evol_Y1: "$Evol_Y1"
-            Evol_Y1: $multiply: ['$Evol_Y1',100]
         ]
         postprocess:[
-          add:
-            new_column: 'periode'
-            column_1: 'Year'
-            column_2: 'Month'
+          pivot:
+              index: ['Month','Metric_Name']
+              column: ['Year']
+              value: 'Metric_Value'
         ,
+          subtract:
+              new_column: 'difference'
+              column_1: '2018'
+              column_2: '2017'
+        ,
+          divide:
+              new_column: 'evolution'
+              column_1: 'difference'
+              column_2: '2018'
+        ,
+          multiply:
+              new_column: 'evolution'
+              column_1: 'evolution'
+              column_2: 100
+        ,
+          melt:
+              id: ['Month','difference','evolution','Metric_Name']
+              value: ['2018','2017']
+              dropna: true
+        ,
+          add:
+              new_column: 'period'
+              column_1: 'Year'
+              column_2: 'Month'
+         ,
           convert_str_to_datetime:
-             selector: 'periode'
+             selector: 'period'
              format: '%Y%m'
         ,
-          top:
-              #group: ['variable',"Category"]
-              value: 'periode'
-              limit: 26
-              order: 'desc'
-        ,
           convert_datetime_to_str:
-              selector: 'periode'
-              format: '%Y-%m'
+             selector: 'period'
+             format: '%Y-%m'
         ]
-        precision:
-          Evol_Y1: '.1f'
-          Metric_Value: '.1%'
-        units:
-          Evol_Y1: ' Pts'
       metaSerie: [
-        'Evol_Y1'
+        'evolution'
       ]
       legend: true
   }
@@ -452,7 +523,7 @@ slides: [
             domain:"DigitalTransformation"
             Country_Name: $in: ["Luxembourg"]
             Bank_Name: $in: ["BNP"]
-            Indicator_Group: $in: ['Product finished form','Product initiated form']
+            Indicator_Group: $in: ['Product initiated form','Product finished form']
             Indicator: $in: ['All products']
             Platform_Category: $in: ["Site"]
         ,
@@ -462,34 +533,39 @@ slides: [
             Year: $substr: ["$Period",0, 4]
             Month: $substr: ["$Period",4, 6]
             Indicator_Group: ['$Indicator_Group']
-            Evol_Y1: "$Evol_Y1"
-            Evol_YTD1: "$Evol_YTD1"
         ]
-        postprocess:[
-          add:
-            new_column: 'periode'
-            column_1: 'Year'
-            column_2: 'Month'
-        ,
-          convert_str_to_datetime:
-             selector: 'periode'
-             format: '%Y%m'
-        ,
-          top:
-              #group: ['variable',"Category"]
-              value: 'periode'
-              limit: 13
-              order: 'desc'
-        ,
-          convert_datetime_to_str:
-              selector: 'periode'
-              format: '%Y-%m'
-        ]
-        precision:
-          Evol_Y1: '.1%'
-          Evol_YTD1: '.1%'
-        units:
-          Metric_Value: ' Visitors'
+        #postprocess:[
+          #pivot:
+              #index: ['Month','Indicator']
+              #column: ['Year']
+              #value: 'Metric_Value'
+        #,
+          #subtract:
+              #new_column: 'difference'
+              #column_1: '2018'
+              #column_2: '2017'
+        #,
+          #divide:
+              #new_column: 'evolution'
+              #column_1: 'difference'
+              #column_2: '2018'
+        #,
+          #multiply:
+              #new_column: 'evolution'
+             # column_1: 'evolution'
+             # column_2: 100
+        #,
+          #melt:
+              #id: ['Month','difference','evolution','Indicator']
+              #value: ['2018','2017']
+              #dropna: true
+        #,
+          #add:
+              #new_column: 'period'
+              #column_1: 'Year'
+              #column_2: 'Month'
+
+        #]
       lines_data:
         query:[
           $match:
@@ -506,110 +582,61 @@ slides: [
             Period: "$Period"
             Year: $substr: ["$Period",0, 4]
             Month: $substr: ["$Period",4, 6]
-            Evol_Y1: "$Evol_Y1"
-            Evol_Y1: $multiply: ['$Evol_Y1',100]
+            Metric_Value: $multiply: ["$Metric_Value", 100]
         ]
-        postprocess:[
-          add:
-            new_column: 'periode'
-            column_1: 'Year'
-            column_2: 'Month'
-        ,
-          convert_str_to_datetime:
-             selector: 'periode'
-             format: '%Y%m'
-        ,
-          top:
-              #group: ['variable',"Category"]
-              value: 'periode'
-              limit: 13
-              order: 'desc'
-        ,
-          convert_datetime_to_str:
-              selector: 'periode'
-              format: '%Y-%m'
-        ]
-        precision:
-          Metric_Value: '.1%'
-          Evol_Y1: '.1f'
-        units:
-          Evol_Y1: ' Pts'
-          Metric_Value: ' Convertion Rate'
+        #postprocess:[
+          #pivot:
+              #index: ['Month','Indicator']
+              #column: ['Year']
+              #value: 'Metric_Value'
+        #,
+          #subtract:
+              #new_column: 'difference'
+              #column_1: '2018'
+              #column_2: '2017'
+        #,
+          #divide:
+              #new_column: 'evolution'
+              #column_1: 'difference'
+              #column_2: '2018'
+        #,
+          #multiply:
+              #new_column: 'evolution'
+             # column_1: 'evolution'
+             # column_2: 100
+        #,
+          #melt:
+              #id: ['Month','difference','evolution','Indicator']
+              #value: ['2018','2017']
+              #dropna: true
+        #,
+          #add:
+              #new_column: 'period'
+              #column_1: 'Year'
+              #column_2: 'Month'
+
+        #]
 
     chartOptions:
-      style: 'increase-legend-width'
       chartType: 'new-barlinechart'
       bars:
         dataset: 'bars_data'
         domain: [0, 3000]
-      label: 'periode'
+      label: 'Period'
       value: 'Metric_Value'
       groups: 'Indicator_Group'
 
 
       lines:
         dataset: 'lines_data'
-        x: 'periode'
+        x: 'Period'
         y: 'Metric_Value'
-        domain: [-1, 1]
+        domain: [0, 100]
         serie: 'Indicator_Group'
-        metaSerie: ['Evol_Y1']
-
-      metaSerie: [
-        'Evol_Y1'
-        'Evol_YTD1'
-      ]
+      #metaSerie: [
+        #'evolution'
+      #]
       legend: true
-  }
-  {
-    id: 20101
-    level: 3
-    hidden: false
-    parent_id: 201
-    title: 'Qualified visits'
-
-    datasets:
-      bars_data:
-        query:
-          domain: 'ToucanTouco'
-          Subcategory: $in: ['Contact Touchpoints']
-          Metric_Acronym: $in: ['NB_Visits']
-          Bank_Name: $nin: ['All']
-        units:
-          value: 'nb of visits'
-      lines_data:
-        query:
-          domain: 'ToucanTouco'
-          Subcategory: $in: ['Contact Touchpoints']
-          Metric_Acronym: $in: ['BounceRate']
-          Bank_Name: $nin: ['All']
-        precision:
-          value: '.2f'
-        units:
-          value: 'bounce rate'
-
-
-  chartOptions:
-    chartType: 'new-barlinechart'
-
-    bars:
-      dataset: 'bars_data'
-      domain: [0, 2000000]
-    label: 'Period'
-    value: 'Metric_Value'
-    groups: 'Bank_Name'
-
-
-
-    lines:
-      dataset: 'lines_data'
-      x: 'Period'
-      y: 'Metric_Value'
-      domain: [0, 100]
-
-      serie: 'Bank_Name'
-
-    legend: true
   }
   {
     id: 20101
@@ -632,7 +659,7 @@ slides: [
         #   $group:
         #     _id:
         #       Platform_Category : "$Platform_Category"
-        #     Metric_Value: $sum: "$Metric_Value"
+        #     Metric_Value: $sum: "$Metric_Value
         ,
           $project:
               Metric_Value: 1
@@ -700,6 +727,14 @@ slides: [
           type: "buttons"
           datasets: ['bars_data','lines_data']
   }
+
+  {
+    id: 20201
+    level: 3
+    hidden: false
+    parent_id: 202
+    title: 'Product Form'
+  }
   {
     id: 20202
     level: 3
@@ -714,40 +749,35 @@ slides: [
     parent_id: 203
     title: 'Product View'
     commentary: " What products are more interesting for the potential clients? (new clients and cross sell)"
+
     datasets:
       bars_data:
-        query: [
+        query:[
           $match:
             domain: 'ToucanTouco'
             Subcategory: $in: ['Acquisition']
             Metric_Acronym: $in: ['NB_Visits']
-            Bank_Name: $in: ["All"]
-            Indicator_Group: $in: ["Product visit"]
+            Bank_Name: $in: ['BNP','HelloBank!']
+            Country_Name: $in: ['France','Luxembourg']
         ,
           $group:
             _id:
-              "Indicator_Group": '$Indicator_Group'
               "Period": '$Period'
             Metric_Value: $sum: "$Metric_Value"
         ,
           $project:
-            Period : "$_id.Period"
+            Period : "_id.Period"
             Metric_Value: 1
-      ]
-        # [
-        #   $match:
-        #     domain: 'ToucanTouco'
-        #     Subcategory: $in: ['Acquisition']
-        #     Metric_Acronym: $in: ['NB_Visits']
-        #     Bank_Name: $in: ['BNP','HelloBank!']
-        #     Country_Name: $in: ['France','Luxembourg']
-        # ]
-        # mutiple_queries: true
+            Indicator_Group: 1
+            Bank_Name: $literal: "All"
+        ]
+
         crossfilter:
           on: 'Period'
-          datasets: ["lines_data"]
+          datasets: ["bars_data"]
+
       lines_data:
-        query: [
+        query:[
           $match:
             domain: 'ToucanTouco'
             Subcategory: $in: ['Acquisition']
@@ -761,54 +791,55 @@ slides: [
             Metric_Value: $sum: "$Metric_Value"
         ,
           $project:
-            Period : "$_id.Period"
+            Period : "_id.Period"
             Metric_Value: 1
             Indicator_Group: 1
             Bank_Name: $literal: "All"
         ]
+
       slave_data:
-        query: [
+        query:[
           $match:
             domain: 'ToucanTouco'
             Subcategory: $in: ['Acquisition']
-            Metric_Acronym: $in: ['NB_Visits']
+            Metric_Acronym: $in: ['Pct_Visits']
             Bank_Name: $in: ['BNP','HelloBank!']
-            #Country_Name: $in: ['France','Luxembourg']
+            Country_Name: $in: ['France','Luxembourg']
         ]
+
     charts: [
       {
-      chartType: "new-barlinechart"
-      filters:
-        "bottom-right":
-          on: "Indicator_Group"
-          type: "buttons"
+        chartType: "new-barlinechart"
+        filters:
+          "bottom-right":
+            on: "Indicator_Group"
+            type: "buttons"
+            datasets: [
+              'bars_data'
+              'lines_data'
+            ]
+        bars:
+          dataset:"bars_data"
+        label:"Period"
+        value:"Metric_Value"
+        groups:"Period"
+        lines:
+          dataset:"line_data"
+          x: "Period"
+          y: "Metric_Value"
+          serie: "Period"
+        crossfilter:
+          on: 'Period'
           datasets: [
-            'bars_data',
-            'lines_data'
+            'slave_data'
           ]
-      bars:
-        dataset:"bars_data"
-      label:"Period"
-      value:"Metric_Value"
-      groups:"Period"
-      lines:
-        dataset:"lines_data"
-        x: "Period"
-        y: "Metric_Value"
-        serie: "Period"
-      crossfilter:
-        on: 'Period'
-        datasets: [
-          'slave_data'
-        ]
       }
       {
-      chartType: "horizontalbarchart"
-      dataset: "slave_data"
+        dataset: "slave_data"
+        chartType: "horizontalbarchart"
       }
     ]
   }
-
   {
     id: 20401
     level: 3
@@ -838,5 +869,4 @@ slides: [
     title: 'App Dowload trend evolution'
   }
 
-  
 ]

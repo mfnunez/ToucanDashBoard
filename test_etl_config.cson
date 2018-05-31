@@ -6,7 +6,14 @@ DATA_SOURCES: [
     encoding: 'utf-8'
     type: 'csv'
   }
-   {
+  {
+    domain: 'DigitalTransformation'
+    file: 'month_DigitalTransformation_201601_201803.csv'
+    separator: ';'
+    encoding: 'utf-8'
+    type: 'csv'
+  }
+  {
     domain: 'linechart'
     file: 'test_studio_line.csv'
     separator: ';'
