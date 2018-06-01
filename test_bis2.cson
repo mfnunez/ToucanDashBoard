@@ -565,52 +565,6 @@ slides: [
     hidden: false
     parent_id: 201
     title: 'Qualified visits'
-
-    datasets:
-      bars_data:
-        query:
-          domain: 'ToucanTouco'
-          Subcategory: $in: ['Contact Touchpoints']
-          Metric_Acronym: $in: ['NB_Visits']
-          Bank_Name: $nin: ['All']
-        units:
-          value: 'nb of visits'
-      lines_data:
-        query:
-          domain: 'ToucanTouco'
-          Subcategory: $in: ['Contact Touchpoints']
-          Metric_Acronym: $in: ['BounceRate']
-          Bank_Name: $nin: ['All']
-        precision:
-          value: '.2f'
-        units:
-          value: 'bounce rate'
-
-  chartOptions:
-    chartType: 'new-barlinechart'
-
-    bars:
-      dataset: 'bars_data'
-      domain: [0, 2000000]
-    label: 'Period'
-    value: 'Metric_Value'
-    groups: 'Bank_Name'
-
-    lines:
-      dataset: 'lines_data'
-      x: 'Period'
-      y: 'Metric_Value'
-      domain: [0, 100]
-      serie: 'Bank_Name'
-
-    legend: true
-  }
-  {
-    id: 20101
-    level: 3
-    hidden: false
-    parent_id: 201
-    title: 'Qualified visits'
     commentary: "Are we reaching the most qualified audience to increase our potential client base?"
 
     datasets:
@@ -634,8 +588,45 @@ slides: [
               Platform_Category : 1
               Metric_Acronym : 1
               Period : 1
+              Year: $substr: ["$Period",0, 4]
+              Month: $substr: ["$Period",4, 6]
+              Evol_Y1: "$Evol_Y1"
+              Evol_YTD1: "$Evol_YTD1"
         ]
-
+        postprocess:[
+          add:
+            new_column: 'periode'
+            column_1: 'Year'
+            column_2: 'Month'
+        ,
+          convert_str_to_datetime:
+             selector: 'periode'
+             format: '%Y%m'
+        ,
+          top:
+              #group: ['variable',"Category"]
+              value: 'periode'
+              limit: 13
+              order: 'desc'
+        ,
+          convert_datetime_to_str:
+              selector: 'periode'
+              format: '%Y-%m'
+        ]
+        precision:
+          Evol_Y1:'.1%'
+          Evol_YTD1:'.1%'
+          value: '.2f'
+        units:
+          Metric_Value: [
+            unit: " Visits"
+            where:
+              "Metric_Acronym": "NB_Visits"
+          ,
+            unit: " %"
+            where:
+              "Metric_Acronym": "BounceRate"
+          ]
       lines_data:
         query:[
           $match:
@@ -656,19 +647,34 @@ slides: [
               Platform_Category : 1
               Metric_Acronym : 1
               Period : 1
+              Year: $substr: ["$Period",0, 4]
+              Month: $substr: ["$Period",4, 6]
+              Metric_Name: "$Metric_Name"
+              Evol_Y1: "$Evol_Y1"
+        ]
+        postprocess:[
+          add:
+            new_column: 'periode'
+            column_1: 'Year'
+            column_2: 'Month'
+        ,
+          convert_str_to_datetime:
+             selector: 'periode'
+             format: '%Y%m'
+        ,
+          top:
+              #group: ['variable',"Category"]
+              value: 'periode'
+              limit: 13
+              order: 'desc'
+        ,
+          convert_datetime_to_str:
+              selector: 'periode'
+              format: '%Y-%m'
         ]
         precision:
-          value: '.2f'
-        units:
-          Metric_Value: [
-            unit: " Visits"
-            where:
-              "Metric_Acronym": "NB_Visits"
-          ,
-            unit: " %"
-            where:
-              "Metric_Acronym": "BounceRate"
-          ]
+          Evol_Y1:'.1%'
+
     chartOptions:
       chartType: 'new-barlinechart'
 
@@ -685,7 +691,12 @@ slides: [
         y: 'Metric_Value'
         domain: [0, 100]
         serie: 'Bank_Name'
+        metaSerie: ['Evol_Y1']
 
+        metaSerie: [
+          'Evol_Y1'
+          'Evol_YTD1'
+        ]
       legend: true
 
       filters:
